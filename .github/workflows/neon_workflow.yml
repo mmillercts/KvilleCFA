@@ -1,1 +1,45 @@
+name: Neon Workflow
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      NEON_CONNECTION_STRING: ${{ secrets.NEON_CONNECTION_STRING }} # <--- Set this in your GitHub repo secrets!
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      # If you have migration or seed scripts, run them here:
+      # - name: Run DB migrations
+      #   run: npm run migrate
+
+      # - name: Seed database
+      #   run: npm run seed
+
+      - name: Run tests
+        run: npm test
+
+      # Optional: Deploy to Netlify (if using Netlify)
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v3
+      #   with:
+      #     publish-dir: './dist'
+      #     production-branch: 'main'
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     site-id: ${{ secrets.NETLIFY_SITE_ID }}
